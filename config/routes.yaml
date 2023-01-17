@@ -1,3 +1,14 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+# index:                                                  # Nom de la route
+#    path: /                                              # Chemin de la route !
+#    controller: App\Controller\TestController::index     # Controller
+
+# test:                                                   # Nom de la route
+#     path: /test/{age}                                          # Chemin de la route !
+#     controller: App\Controller\TestController::test      # Controller
+#     methods: [GET, POST]
+#     defaults: 
+#       age: 0
+#     requirements: 
+#       age: \d+
+
+
