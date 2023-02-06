@@ -16,11 +16,14 @@
         "liorchamla/faker-prices": "^2.0",
         "mbezhanov/faker-provider-collection": "^2.0",
         "sensio/framework-extra-bundle": "^6.2",
+        "symfony/apache-pack": "^1.0",
         "symfony/console": "5.4.*",
         "symfony/dotenv": "5.4.*",
         "symfony/flex": "^1.17|^2",
+        "symfony/form": "5.4.*",
         "symfony/framework-bundle": "5.4.*",
         "symfony/maker-bundle": "^1.43",
+        "symfony/monolog-bundle": "^3.0",
         "symfony/runtime": "5.4.*",
         "symfony/string": "5.4.*",
         "symfony/twig-bundle": "5.4.*",
@@ -77,6 +80,9 @@
         }
     },
     "require-dev": {
-        "fakerphp/faker": "^1.21"
+        "fakerphp/faker": "^1.21",
+        "symfony/debug-bundle": "5.4.*",
+        "symfony/stopwatch": "5.4.*",
+        "symfony/web-profiler-bundle": "5.4.*"
     }
 }
