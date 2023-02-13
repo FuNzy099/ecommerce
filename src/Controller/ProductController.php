@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -92,69 +94,31 @@ class ProductController extends AbstractController
     /**
      * @Route("/admin/product/create", name="product_create")
      */
-    public function create(FormFactoryInterface $factory, Request $request, SluggerInterface $slugger)
+    public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
+    
+        $product = new Product;
 
-        $builder = $factory->createBuilder(FormType::class, null, [
-            'data_class' => Product::class
-        ]);
+        // Permet de créer un formulaire qui ce base sur la classe ProductType
+        $form = $this -> createForm(ProductType::class, $product);
 
-        $builder
-
-            ->add('name', TextType::class, [
-                // Permet d'appliquer un label au champ input
-                'label' => 'Nom du produit :',
-
-                // Permet de gerer les attributs html du champ
-                'attr' => [
-                    // 'class' => 'form-control',                  // Permet d'appliquer une classe CSS venant de Bootstrap pour styliser le champ input
-                    'placeholder' => 'Tapez le nom du produit'  // Permet d'appliquer une placeholder au sein même du input
-                ]
-            ])
-
-            ->add('shortDescription', TextareaType::class, [
-                'label' => 'Description courte :',
-                'attr' => [
-                    // 'class' => 'form-control',
-                    'placeholder' => 'Tapez une description suffisement courte mais parlante pour le visiteur'
-                ]
-            ])
-
-            ->add('price', MoneyType::class, [
-                'label' => 'Prix du produit :',
-                'attr' => [
-                    // 'class' => 'form-control',
-                    'placeholder' => 'Tapez le prix du produit en euro'
-                ]
-            ])
-
-            ->add('mainPicture', UrlType::class, [
-                'label' => 'Image du produit :',
-                'attr' => ['placeholder' => 'Tapez une URL d\'image !']
-            ])
-
-            ->add('category', EntityType::class, [
-                'label' => 'Catégorie :',
-                // 'attr' => [
-                //     'class' => 'form-control'
-                // ],
-                'placeholder' => '-- Choisir une catégorie --',
-                'class' => Category::class,
-                'choice_label' => function(Category $category){
-                    return strtoupper($category -> getName());
-                },
-            ]);
-        
-        $form = $builder->getForm();
-
+        // Permet d'analyser la requette
         $form->handleRequest($request);
         
         if($form -> isSubmitted()){
 
-            $product = $form->getData();
+            // On initialise le slug du produit en question
             $product -> setSlug(strtolower($slugger -> slug($product->getName())));
 
-            dd($product);
+            $em -> persist($product);
+
+            $em -> flush();
+
+            // Permet de faire une redirection vers la route produc_show
+            return $this -> redirectToRoute('product_show', [
+            'category_slug' => $product -> getCategory() -> getSlug(),
+            'slug' => $product -> getSlug()
+            ]);
 
         }
 
@@ -165,6 +129,43 @@ class ProductController extends AbstractController
             'formView' => $formView
 
         ]);
+    }
+
+
+
+        /**
+     * @Route("/admin/product/{id}/edit", name="product_edit")
+     */
+    public function edit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $em){
+
+        $product = $productRepository -> find($id);
+
+        $form = $this -> createForm(ProductType::class, $product);
+
+        $form -> handleRequest($request);
+
+        if ($form -> isSubmitted()) {
+            
+            $em -> flush();
+
+            // Permet de faire une redirection vers la route produc_show
+            return $this -> redirectToRoute('product_show', [
+                'category_slug' => $product -> getCategory() -> getSlug(),
+                'slug' => $product -> getSlug()
+            ]);
+
+        }
+
+        $formView = $form -> createView();
+
+        return $this->render('product/edit.html.twig', [
+
+            'product' => $product,
+
+            'formView' => $formView
+
+        ]);
+
     }
 
     
