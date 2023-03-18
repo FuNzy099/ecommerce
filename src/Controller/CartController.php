@@ -3,13 +3,11 @@
 namespace App\Controller;
 
 use App\Cart\CartService;
+use App\Form\CartConfirmationType;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CartController extends AbstractController
@@ -23,7 +21,7 @@ class CartController extends AbstractController
         
         $this->productRepository = $productRepository;
         $this->cartService = $cartService;
-
+        
     }
 
     /**
@@ -94,7 +92,8 @@ class CartController extends AbstractController
      * @Route("/cart", name="cart_show")
      */
     public function show(){
-       
+
+        $form = $this->createForm(CartConfirmationType::class);
 
         $detaileCart = $this->cartService->getDetailedCartItems();
 
@@ -103,6 +102,7 @@ class CartController extends AbstractController
         return $this->render('cart/index.html.twig', [
             'items' => $detaileCart,
             'total' => $total,
+            'confirmationForm' => $form->createView() 
 
         ]);
 
