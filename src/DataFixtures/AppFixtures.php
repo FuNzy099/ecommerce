@@ -82,10 +82,10 @@ class AppFixtures extends Fixture
 
             $category
                 // Permet de définir le nom de la categorie
-                -> setName($faker -> department)
+                -> setName($faker -> department);
 
                 // Permet de définir le slug en ce basant sur le nom de la categorie, strtolower permet de mettre en minuscule tous les caracteres
-                -> setSlug(strtolower($this -> slugger -> slug($category -> getName())));
+                // -> setSlug(strtolower($this -> slugger -> slug($category -> getName())));
 
             // Persist permet de faire connaitre à l'ORM Doctrine l'existance d'une categorie
             $manager -> persist($category);
@@ -113,7 +113,7 @@ class AppFixtures extends Fixture
                 ->setPrice($faker->price(4000, 20000)) 
 
                 // Permet de définir le slug en ce basant sur le nom du produit, strtolower permet de mettre en minuscule tous les caracteres
-                ->setSlug(strtolower($this -> slugger -> slug($product -> getName())))  
+                // ->setSlug(strtolower($this -> slugger -> slug($product -> getName())))  
 
                 // Permet de définir le produit à une categorie
                 ->setCategory($category)
