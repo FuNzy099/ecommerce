@@ -16,7 +16,7 @@
     </ol>
 
     {# Permet d'afficher le nom du produit et sont prix en euro #}
-    <h1> {{ product.name }} ( {{ product.price / 100 }} € ) </h1>
+    <h1> {{ product.name }} ( {{ product.price | amount }} ) </h1>
 
     <div class="row">
 
